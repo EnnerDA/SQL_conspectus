@@ -89,24 +89,60 @@ float(4,2), будет сохранять всего четыре разряда
 |Person_id  |Smallint (unsigned)|                       |
 |First_name |Varchar(20)        |                       |
 |Last_name  |Varchar(20)        |                       |
-|Gender     |Char(1)            |M,F                    |
+|Gender     |Char(1)            |M, F                   |
 |Birth_date |Date               |                       |
 |Street     |Varchar(30)        |                       |
 |City       |Varchar(20)        |                       |
 |State      |Varchar(20)        |                       |
 |Country    |Varchar(20)        |                       |
-|Postal-code||Varchar(20)       |                       |
+|Postal-code|Varchar(20)        |                       |
 
-и таблицу Favorite_food
+и таблицу *Favorite_food*
 |**Столбец**|**Тип**            |
 |:----------|:------------------|
 |Person_id  |Smallint (unsigned)|
 |Food       |Varchar(20)        |
 
 
+Пишем SQL-выражение
+```mysql
+mysql> CREATE TABLE person
+    -> (person_id SMALLINT UNSIGNED,
+    -> fname VARCHAR(20),
+    -> lname VARCHAR(20),
+    -> gender CHAR(1),
+    -> birth_date DATE,
+    -> address VARCHAR(30),
+    -> city VARCHAR(20),
+    -> state VARCHAR(20),
+    -> country VARCHAR(20),
+    -> postal_code VARCHAR(20),
+    -> CONSTRAINT pk_person PRIMARY KEY (person_id)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+```
+Что бы убедиться что таблица создалась введем `DESC person;`.
 
+![изображение](https://user-images.githubusercontent.com/116806816/215477756-619b6190-512b-4755-ba03-bac8e5f02888.png)
 
-
-
-
-
+```mysql
+CREATE TABLE favorite_food
+(person_id SMALLINT UNSIGNED,
+food VARCHAR(20),
+CONSTRAINT pk_favorite_food PRIMARY KEY (person_id, food),
+CONSTRAINT fk_person_id FOREIGN KEY (person_id)
+REFERENCES person (person_id)
+);
+```
+В конструкторе таблиц стоит обратить внимание на последние строчки 
+```mysql
+CONSTRAINT pk_person PRIMARY KEY (person_id)
+``` 
+и
+```musql
+CONSTRAINT fk_person_id FOREIGN KEY (person_id)
+REFERENCES person (person_id)
+```
+CONSTRAINT - это *ограничение*. Бывают нескольких типов:
+* CONSTRAINT PRIMARY KEY - *ограничение первичного ключа* 
+стр.39
