@@ -144,5 +144,10 @@ CONSTRAINT fk_person_id FOREIGN KEY (person_id)
 REFERENCES person (person_id)
 ```
 CONSTRAINT - это *ограничение*. Бывают нескольких типов:
-* CONSTRAINT PRIMARY KEY - *ограничение первичного ключа* 
+* CONSTRAINT PRIMARY KEY - *ограничение первичного ключа* накладывается на столбец (`person_id`) и получает имя *pk_person*. Автор советует в случае ограничения первичного ключа давать имя pk (primary key) нижнее подчеркивание и имя таблицы. 
+* CONSTRAINT FOREIGN KEY - *ограничение внешнего ключа*, ограничивает значения столбца *person_id* таблицы *favorite_food* позволяя ему включать только те значения, которые есть в в столбце *person_id* таблицs *person*. Еще раз синтаксис:
+```mysql
+CONSTRAINT fk_person_id FOREIGN KEY (person_id)
+REFERENCES person (person_id)
+```
 стр.39
