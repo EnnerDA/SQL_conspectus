@@ -428,7 +428,7 @@ mysql> SELECT emp_id, title, start_date, fname, lname
 ```
 Но будем чеснтны способ сомнительный. Не стоит так делать ибо не явно!
 
-[Упражнения главы 3ъ(https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises.sql)
+[Упражнения главы 3](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises.sql)
 
 
 
