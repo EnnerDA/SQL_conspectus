@@ -78,7 +78,7 @@ mysql> SELECT p.product_cd, a.cust_id, a.avail_balance
 SELECT p.product_cd, a.cust_id, a.
 FROM product p INNER JOIN account
 ON p.product_cd = a.product_cd
-WHERE p.product_type_cd = 'ACCOUNT
+WHERE p.product_type_cd = 'ACCOUNT';
 
 /* Result
 +------------+---------+---------------+
