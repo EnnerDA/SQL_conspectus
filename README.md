@@ -28,6 +28,11 @@ source C:\Users\1\LearningSQLExample.sql
 ```
 $ mysql -u ennerda -p probabase
 ```
+Для просмотра всех созданных пользователей вводим
+```mysql
+ mysql> SELECT user FROM mysql. user;
+ ```
+ 
 ## Типы данных MySQL.
 ### Символьные данные.
 
@@ -143,11 +148,47 @@ CONSTRAINT pk_person PRIMARY KEY (person_id)
 CONSTRAINT fk_person_id FOREIGN KEY (person_id)
 REFERENCES person (person_id)
 ```
-CONSTRAINT - это *ограничение*. Бывают нескольких типов:
-* CONSTRAINT PRIMARY KEY - *ограничение первичного ключа* накладывается на столбец (`person_id`) и получает имя *pk_person*. Автор советует в случае ограничения первичного ключа давать имя pk (primary key) нижнее подчеркивание и имя таблицы. 
-* CONSTRAINT FOREIGN KEY - *ограничение внешнего ключа*, ограничивает значения столбца *person_id* таблицы *favorite_food* позволяя ему включать только те значения, которые есть в в столбце *person_id* таблицs *person*. Еще раз синтаксис:
+**CONSTRAINT** - это *ограничение*. Бывают нескольких типов:
+* **CONSTRAINT PRIMARY KEY** - *ограничение первичного ключа* накладывается на столбец (`person_id`) и получает имя *pk_person*. Автор советует в случае ограничения первичного ключа давать имя pk (primary key) нижнее подчеркивание и имя таблицы. 
+* **CONSTRAINT FOREIGN KEY** - *ограничение внешнего ключа*, ограничивает значения столбца *person_id* таблицы *favorite_food* позволяя ему включать только те значения, которые есть в в столбце *person_id* таблицs *person*. Еще раз синтаксис:
 ```mysql
 CONSTRAINT fk_person_id FOREIGN KEY (person_id)
 REFERENCES person (person_id)
 ```
-стр.39
+Оператор **`alter table`** - позволяет внести извенения в таблицу после ее создания. Пример видимо будет позже.
+
+## Заполнение и изменение таблиц.
+Будут изучены основные SQL-выражения для работы: **`insert`**, **`update`**, **`delete`**, **`select`**.
+### Вставка данных. `isnert`
+Для начала внесём изменения в столбец *`person_id`* таблицы *`person`* 
+```MYSQL
+ALTER TABLE person MODIFY person_id SMALLINT UNSIGNED AUTO_INCREMENT;
+```
+`ALTER TABLE` - оператор сообщающий, что мы вносим изменение в таблицу.
+
+`MODIFY` - сообщает, что меняет уже существующие столбцы таблицы.
+
+`AUTO_INCREMENT` - автоматическое приращение. Доступно в MySQL. 
+
+Таким образом мы задали алогритм для автоматического заполнения первичного ключа, теперь можно перейти к наполнению таблицы.
+
+Создадим господина William Turner.
+```mysql
+mysql> INSERT INTO person
+    -> (person_id, fname, lname, gender, birth_date)
+    -> VALUES (null, 'William', 'Turner', 'M', '1972-05-27');
+    -> Query OK, 1 row affected (0.01 sec)	
+Query OK, 1 row affected (0.01 sec)
+```
+Проверим добавленные данные
+```mysql
+SELECT person_id, fname, lname, gender, birth_date
+FROM person;
+```
+![изображение](https://user-images.githubusercontent.com/116806816/215682327-da944dd2-2433-49d6-b829-7eaee5883c23.png)
+
+
+
+
+
+
