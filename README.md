@@ -187,6 +187,48 @@ FROM person;
 ```
 ![изображение](https://user-images.githubusercontent.com/116806816/215682327-da944dd2-2433-49d6-b829-7eaee5883c23.png)
 
+Если потребуется извлечь не все строки таблицы то внесем уточнение
+```mysql
+SELECT person_id, fname, lname, gender, birth_date
+FROM person;
+WHERE person_id = 1;
+```
+Добавим любимые блюда Вильяма
+```mesql
+mysql> INSERT INTO favorite_food (person_id, food)
+    -> VALUES(1, 'pizza');
+Query OK, 1 row affected (0.03 sec)
+mysql> INSERT INTO favorite_food (person_id, food)
+    -> VALUES(1, 'cookies');
+Query OK, 1 row affected (0.01 sec)   
+mysql> INSERT INTO favorite_food (person_id, food)
+    -> VALUES(1, 'nachos');
+Query OK, 1 row affected (0.00 sec)
+```
+Посмотрим результаты
+```mysql
+SELECT food FROM favorite_food
+WHERE person_id = 1
+ORDER BY food;
+```
+`ORDER BY` - сортировать по...
+
+Добавили еще данных
+
+![изображение](https://user-images.githubusercontent.com/116806816/215688480-85bb2ea5-ede8-4a42-a50c-c71bc2d2c6a0.png)
+
+### Обновление данных. `UPDATE` `SET`.
+```mysql
+UPDATE person
+SET address = '1225 Tremont St.',
+city = 'Boston',
+state = 'MA',
+country = 'USA',
+postal_code = '02138'
+WHERE person_id = 1;
+```
+
+
 
 
 
