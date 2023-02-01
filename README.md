@@ -32,6 +32,15 @@ $ mysql -u ennerda -p probabase
 ```mysql
  mysql> SELECT user FROM mysql. user;
  ```
+ Для просмотра всех созданных баз
+```mysql
+ mysql> SHOW databases;;
+ ```
+ После выбора базы можем посмотреть все таблицы в ней
+```mysql
+mysql> use enydatabase
+    -> SHOW tables;
+ ```
  
 ## Типы данных MySQL.
 ### Символьные данные.
@@ -429,6 +438,8 @@ mysql> SELECT emp_id, title, start_date, fname, lname
 Но будем чеснтны способ сомнительный. Не стоит так делать ибо не явно!
 
 [Упражнения главы 3](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises.sql)
+
+## Глава 4. Фильтрация.
 
 
 
