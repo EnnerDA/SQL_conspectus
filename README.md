@@ -534,7 +534,74 @@ WHERE superior_emp_id != 6 or superior_emp_id IS NULL;
 ```
 [Упражнения Главы 4](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_4.sql)
 
+## Глава 5. Запрос к нескольким таблицам. 
+### Декартово произведение.
+```mysql
+SELECT e.fname, e.lname, d.name 	
+FROM employee e JOIN department d;
+```
+Если не указать связующий столбец для таблиц то получим *декартово произведение* То есть все возможные варианты перестановки. Сложный инструмент для осознаного применения. Вычеркиваем эту опцию.
 
+### Внутренние соединения. `INNER JOIN`
+В предидущий код нужно внести информацию о связующем столбце в блоке `ON`.
+```mysql
+SELECT e.fname, e.lname, d.name 	
+FROM employee e JOIN department d;
+ON e.dept_id = d.dept_id
+```
+Если определенное значение столбца dept_id присутствует в одной таблице, но его нет в другой, соединение строк не происходит, и они не включаются в результирующий набор.
 
+Считается что указание типа соединения это верная привычка. Посему писать будем `INNER` 
 
+А если имена столбцов в обеих таблицах совпадают то можем писать вместо блока `ON` - `USING(название столбца)`.
+```mysql
+SELECT e.fname, e.lname, d.name 	
+FROM employee e INNER JOIN department d;
+USING (dept_id);
+```
+### ANSI-синтаксис соединения.
+Возможно где-то еще существует старый синтаксис в котором блок `ON` заменен равенством столбцов в блоке `WHERE`.
+```mysql
+SELECT e.fname, e.lname, d.name 	
+FROM employee e, department d;
+WHERE e.dept_id = d.dept_id;
+```
+Но в блоке `WHERE` так же будут прописыватьс условия фильтрации, и получиться что их тяжело отделить от условий соединения. Код становится сложнее, менее читабельным становится.
 
+### Соединение трёх и более таблиц.
+Просто добавляется еще один блок `FROM JOIN` а так же подблок `ON`.
+```mysql
+mysql> SELECT a.account_id, c.fed_id, e.fname, e.lname
+    -> FROM account a INNER JOIN customer c
+    -> USING(cust_id)
+    -> INNER JOIN employee e /* добавляем третью таблицу */
+    -> ON a.open_emp_id = e.emp_id /* стыкуем с одной из добавленных */
+    -> WHERE c.cust_type_cd = 'B'; /* условия фильтрации */
+```
+```$
++------------+------------+---------+---------+
+| account_id | fed_id     | fname   | lname   |
++------------+------------+---------+---------+
+|         20 | 04-1111111 | Theresa | Markham |
+|         21 | 04-1111111 | Theresa | Markham |
+|         22 | 04-2222222 | Paula   | Roberts |
+|         23 | 04-3333333 | Theresa | Markham |
+|         24 | 04-4444444 | John    | Blake   |
++------------+------------+---------+---------+
+```
+### Применение подзапросов
+Необходим выбор всех счетов, открытых опытными операционистами (устроились ранее 2003-01-01), в настоящее время работающими в отделении Woburn.
+```mysql
+SELECT a.account_id, a.cust_id, a.open_date, a.product_cd
+FROM account a INNER JOIN
+(SELECT emp_id, assigned_branch_id  /* вместо второй таблицы мы вставляем подзапрос */
+FROM employee /* в котором отсеиваем не опытных операционисток */
+WHERE start_date <= '2003 01 01'
+AND (title = 'Teller' OR title = 'Head Teller')) e
+ON a.open_emp_id = e.emp_id
+INNER JOIN /* добавляем третью таблицу */
+(SELECT branch_id /* но оказывается и это подзапрос*/ 
+FROM branch
+WHERE name = 'Woburn Branch') b /*в котором мы оставляем только отделение Woburn Branch*/
+ON e.assigned_branch_id = b.branch_id;
+```
