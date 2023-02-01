@@ -34,12 +34,11 @@ $ mysql -u ennerda -p probabase
  ```
  Для просмотра всех созданных баз
 ```mysql
- mysql> SHOW databases;;
+ mysql> SHOW databases;
  ```
  После выбора базы можем посмотреть все таблицы в ней
 ```mysql
-mysql> use enydatabase
-    -> SHOW tables;
+mysql> SHOW tables;
  ```
  
 ## Типы данных MySQL.
@@ -440,6 +439,48 @@ mysql> SELECT emp_id, title, start_date, fname, lname
 [Упражнения главы 3](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises.sql)
 
 ## Глава 4. Фильтрация.
+Пример применения состовной фильтрации с оператором IN и NOT
+```mysql
+WHERE end_date IS NULL
+AND NOT (title = 'Teller' OR start_date < '2003-01-01')
+```
+Запись равносильна следующей (внимание на синтаксис)
+```mysql
+WHERE end_date IS NULL
+AND title != 'Teller' OR start_date >= '2003-01-01')
+```
+Второй вариант предпочтительней так как каждое условие полностью описано входящими в него литералами и не требуется возвращаться в начало строки за уточнениями логических условий.
+
+В числе операторов сравнения есть: `=`, `!=`, `<`, `>`, `<>`, `LIKE`, `IN` и `BETWEEN`:
+* Похоже `<>` соответствует `!=`
+* `BEETWEN` для оценки диапазона
+``` mysql
+WHERE start_date < '2003-01-01' 	
+AND start_date >= '2001-01-01';	
+```
+Можно записать
+```mysql
+WHERE start_date BEETWEN '2001-01-01' AND '2003-01-01'
+```
+Важно помнить, что при использовании `BETWEEN` сначала указывается нижний предел а после оператора `AND` верхний. И обе две границы всегда включаются в диапазон. Запись неявная литералы >,<,= как то поприятнее.
+
+Диапазоны могут быть и строковыми!
+* `IN` для оценки вхождения значения в список. Наприvth нам нужны все счета с кодами: 'CHK', 'SAV', 'CD' или 'MM'. Можем записать условие через три оператора `OR`:
+```mysql
+WHERE product_cd = 'CHK' OR product_cd = 'SAV' OR product_cd = 'CD' OR product_cd = 'MM';
+```
+Либо можем записать через вхождение в перечень и оператор `IN`:
+```mysql
+WHERE product_cd IN ('CHK', 'SAV', 'CD', 'MM');
+```
+
+В качестве условий равенства может быть выражение:
+```mysql
+WHERE dept_id = (SELECT dept_id FROM department WHERE name = 'Loans')	
+```
+
+стр.81
+
 
 
 
