@@ -605,3 +605,5 @@ FROM branch
 WHERE name = 'Woburn Branch') b /*в котором мы оставляем только отделение Woburn Branch*/
 ON e.assigned_branch_id = b.branch_id;
 ```
+### Повторное использование таблицы	
+стр.101
