@@ -515,6 +515,15 @@ WHERE fed_id LIKE '___-__-____';
 SELECT emp_id, fname, lname FROM employee
 WHERE lname LIKE 'F%' OR lname LIKE 'G%';
 ```
+### Регулярные выражения. `REGEXP`.
+Объемный инструмент, для самостоятельного изучения если вдруг углублюсь в работу с БД. Но например поиск имен начинающихся с 'F' или 'G' в регулярных выражениях выглядит так:
+```mysql
+SELECT emp_id, fname, lname FROM employee
+WHERE lname REGEXP'^[FG]';
+```
+Не все БД поддерживают регулярные выражения. Надо уточнять.
+
+### NULL
 
 
 
