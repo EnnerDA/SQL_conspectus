@@ -532,6 +532,8 @@ WHERE lname REGEXP'^[FG]';
 ```mysql
 WHERE superior_emp_id != 6 or superior_emp_id IS NULL;
 ```
+[Упражнения Главы 4](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_4.sql)
+
 
 
 
