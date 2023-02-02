@@ -71,7 +71,26 @@ WHERE c.cust_type_cd = 'I';
 
 /* 5.3 Создайте запрос для выбора всех сотрудников, начальник которых приписан к другому отделу. Извлечь ID, имя и фамилию сотрудника.*/
 
-SELECT e1.emp_id, e1.fname, e1.lname, b1.name, 
+SELECT e.emp_id, e.fname, e.lname
+FROM employee e INNER JOIN employee e1
+ON e.superior_emp_id = e1.emp_id
+WHERE e.dept_id != e1.dept_id;
+
+/*RESULT
++--------+-------+-----------+
+| emp_id | fname | lname     |
++--------+-------+-----------+
+|      4 | Susan | Hawthorne |
+|      5 | John  | Gooding   |
++--------+-------+-----------+
+2 rows in set (0.00 sec)
+*/
+
+/*
+Ну и дополнительно я придумал себе задачу
+Создайте запрос для выбора всех сотрудников, начальник которых находится в другом отделении*/
+
+SELECT e1.emp_id, e1.fname, e1.lname, b1.name,
 e2.fname Boss_fname, e2.lname Boss_lname, b2.name Boss_branch
 FROM employee e1 INNER JOIN branch b1
 ON e1.assigned_branch_id = b1.branch_id
@@ -80,6 +99,17 @@ ON e1.superior_emp_id = e2.emp_id
 INNER JOIN branch b2
 ON e2.assigned_branch_id = b2.branch_id
 WHERE b1.name != b2.name;
+
+/*RESULT
++--------+---------+---------+---------------+------------+------------+--------------+
+| emp_id | fname   | lname   | name          | Boss_fname | Boss_lname | Boss_branch  |
++--------+---------+---------+---------------+------------+------------+--------------+
+|     10 | Paula   | Roberts | Woburn Branch | Susan      | Hawthorne  | Headquarters |
+|     13 | John    | Blake   | Quincy Branch | Susan      | Hawthorne  | Headquarters |
+|     16 | Theresa | Markham | So. NH Branch | Susan      | Hawthorne  | Headquarters |
++--------+---------+---------+---------------+------------+------------+--------------+
+3 rows in set (0.00 sec)
+*/
 
 
 
