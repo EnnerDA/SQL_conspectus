@@ -605,5 +605,62 @@ FROM branch
 WHERE name = 'Woburn Branch') b /*в котором мы оставляем только отделение Woburn Branch*/
 ON e.assigned_branch_id = b.branch_id;
 ```
-### Повторное использование таблицы	
-стр.101
+### Повторное использование таблицы и Рекурсия.	
+
+Бывают случаи когда одну таблицу приходиться присоединять несколько раз, тогда в каждом блоке `FROM` надо этой таблице присваивать разные псевдонимы.
+
+Например вот часть таблицы employee
+```mysql
+mysql> select emp_id, fname, lname, title, superior_emp_id from employee
+```
+```$
++--------+----------+-----------+--------------------+-----------------+
+| emp_id | fname    | lname     | title              | superior_emp_id |
++--------+----------+-----------+--------------------+-----------------+
+|      1 | Michael  | Smith     | President          |            NULL |
+|      2 | Susan    | Barker    | Vice President     |               1 |
+|      3 | Robert   | Tyler     | Treasurer          |               1 |
+|      4 | Susan    | Hawthorne | Operations Manager |               3 |
+|      5 | John     | Gooding   | Loan Manager       |               4 |
+|      6 | Helen    | Fleming   | Head Teller        |               4 |
+```
+Но допустим мы бы хотели увидеть сразу имя фамилию руководителя и не его номер id, тогд мы соединяем таблицу саму с собой:
+```mysql
+SELECT e.emp_id, e.fname, e.lname, e.title, b.fname BOSS_fname, b.lname BOSS_lname
+FROM employee e INNER JOIN employee b
+ON e.superior_emp_id = b.emp_id;
+```
+```$
++--------+----------+-----------+--------------------+------------+------------+
+| emp_id | fname    | lname     | title              | BOSS_fname | BOSS_lname |
++--------+----------+-----------+--------------------+------------+------------+
+|      2 | Susan    | Barker    | Vice President     | Michael    | Smith      |
+|      3 | Robert   | Tyler     | Treasurer          | Michael    | Smith      |
+|      4 | Susan    | Hawthorne | Operations Manager | Robert     | Tyler      |
+|      5 | John     | Gooding   | Loan Manager       | Susan      | Hawthorne  |
+|      6 | Helen    | Fleming   | Head Teller        | Susan      | Hawthorne  |
+|      7 | Chris    | Tucker    | Teller             | Helen      | Fleming    |
+```
+### Экви/неэквисоединения.
+Эквисоелинение - когда для соединения двух таблиц значения ключевых столбцов должны совпадать. 
+
+Но можно использовать и неэквисоединения! Например: найти всех сотрудников, принятых в банк в то время, когда предлагалась услуга беспроцентного текущего вклада. Таким образом, дата начала работы сотрудника должна находиться между датами начала и конца этой акции.
+```mysql
+SELECT e.emp_id, e.fname, e.lname, e.start_date 	
+FROM employee e INNER JOIN product p 	
+ON e.start_date >= p.date_offered 	
+AND e.start_date <= p.date_retired 	
+WHERE p.name = 'no-fee checking';	
+```
+Для соревнований по шахматам среди операционистов создадим турнирную таблицу:
+```mysql
+select e1.fname, e1.lname, 'VS' vs, e2.fname, e2.lname
+from employee e1 INNER JOIN employee e2 
+ON e1.emp_id < e2.emp_id
+WHERE e1.title = 'Teller' AND e2.title = 'Teller';
+```
+[Упражнения Главы 5](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_5.sql)
+
+## Глава 6. Работа с множествами.
+
+
