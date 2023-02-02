@@ -723,11 +723,5 @@ select 2 num, 'abc' str;
 
 [Упражнения главы 6](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_6.sql)
 
-## Глава 7. Созданиеб преобразование и работа с данными.
-
-
-
-
-
-
+## Глава 7. Создание, преобразование и работа с данными.
 
