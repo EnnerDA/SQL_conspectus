@@ -810,6 +810,37 @@ mysql> SELECT CONCAT('some', 1, 'else');
 | some1else                 |
 +---------------------------+
 ```
+Дополнение строк конкатинацией:
+```mysql
+UPDATE string_tbl
+SET text_fld = CONCAT(text_fld, ',but now it is longer') /* равносильно += в Python */
+```
+Составление списка строк конкатенацией
+```mysql
+SELECT CONCAT(fname, ' ', lname, ' ', 'has been a ',
+title, 'since ', start_date) Concat_str
+FROM employee
+WHERE title = 'Teller' OR title = 'Head Teller';
+/* RESULT
++--------------------------------------------------------+
+| Concat_str                                             |
++--------------------------------------------------------+
+| Helen Fleming has been a Head Tellersince 2004-03-17   |
+| Chris Tucker has been a Tellersince 2004-09-15         |
+| Sarah Parker has been a Tellersince 2002-12-02         |
+| Jane Grossman has been a Tellersince 2002-05-03        |
+| Paula Roberts has been a Head Tellersince 2002-07-27   |
+| Thomas Ziegler has been a Tellersince 2000-10-23       |
+| Samantha Jameson has been a Tellersince 2003-01-08     |
+| John Blake has been a Head Tellersince 2000-05-11      |
+| Cindy Mason has been a Tellersince 2002-08-09          |
+| Frank Portman has been a Tellersince 2003-04-01        |
+| Theresa Markham has been a Head Tellersince 2001-03-15 |
+| Beth Fowler has been a Tellersince 2002-06-29          |
+| Rick Tulman has been a Tellersince 2002-12-12          |
++--------------------------------------------------------+
+*/
+```
 Вернем таблицу в исходный вид
 ```mysql
 DELETE FROM string_tbl; /*без агрументов удаляет все данные из таблицы*/
@@ -882,9 +913,68 @@ FROM customer;
 +---------+--------------+-------------+-------------+
 */
 ```
-
-
-
+**Функция `INSERT()`**  которая принимает четыре аргумента: исходную строку, начальное положение, число символов, требующих замены, и замещающую строку. В зависимости от значения третьего аргумента функция выполняет вставку либо замену символов строки. Если третий аргумент равен нулю, то замещающая строка вставляется со сдвигом всех последующих символов вправо, например:
+```mysql
+ SELECT INSERT('goodbye world', 9, 0, 'cruel ') string;	
+/*RESULT
++---------------------+
+| string              |
++---------------------+
+| goodbye cruel world |
++---------------------+
+*/
+```
+```mysql
+SELECT INSERT('goodbye world', 1, 7, 'hello') string;
+/* RESULT
++-------------+
+| string      |
++-------------+
+| hello world |
++-------------+
+*/
+```
+**Функция `SUBSTRIN()`** принимает 3 аргумента, первый исходная строка, второй это страртовый номер для извлечения подстроки и третий это количество извлекаемых символов.
+```mysql
+SELECT SUBSTRING('goodbay cluel world', 9, 5);
+/* RESULT
++----------------------------------------+
+| SUBSTRING('goodbay cluel world', 9, 5) |
++----------------------------------------+
+| cluel                                  |
++----------------------------------------+
+*/
+```
+### Числовые данные.
+БД можно использовать как неудобный калькулятор, допустимы '+', '-', '\*', '/', '()'.
+```mysql
+SELECT (37*15/(533-(23*3)))
+/*RESULT
++----------------------+
+| (37*15/(533-(23*3))) |
++----------------------+
+|                 1.20 |
++----------------------+
+```
+**Арифметические операции**
+|**Функция**|**Описание**             |**Комментарий**                |
+|:----------|:------------------------|:------------------------------|
+| SIN(x)    | Синус х                 |                               |
+| COS(x)    | Косинус х               |                               |
+| TAN(x)    | Тангенс х               |                               |
+| COT(x)    | Котангенс х             |                               |
+| ACOS(x)   | Арккосинус х            |                               |
+| ASIN(x)   | Арксинус х              |                               |
+| ATAN(x)   | Арктангенс х            |                               |
+| EXP(x)    | е в степени х           |                               |
+| LN(x)     | Натуральный логарифм х  |                               |
+| SQRT(x)   | Квадратный корень из х  |                               |
+| MOD(x, y) | Возвращает остаток от деления х на у  | MOD(10,4) = 2   |
+| POW(x, y) | х в степени у           |                               |
+| CEIL(x)   | Округляет x вверх       | CEIL(74.335) = 75             |
+| FLOOR(x)  | Округляет x ввниз       | FLOOR(74.7) = 74              |
+| ROUND(x, y) | Округляет x до у количества знаков после запятой   | ROUND(4.7) = 5, ROUND(3.5) = 4, ROUND(3.5337323, 3) = 3.534|
+| FLOOR(x)  | Округляет x ввниз       | FLOOR(74.7) = 74              |
 
 
 
