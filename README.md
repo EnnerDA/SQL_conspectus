@@ -726,4 +726,5 @@ select 2 num, 'abc' str;
 ## Глава 7. Создание, преобразование и работа с данными.
 
 ### Строковые данные.
-[ссылка на строку](https://github.com/EnnerDA/SQL_conspectus/edit/main/README.md?plain=1#L54)
+Таблица была на 54 строке этого документа.
+
