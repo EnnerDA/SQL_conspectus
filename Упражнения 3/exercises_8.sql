@@ -51,11 +51,10 @@ HAVING count(cust_id) >= 2;
 
 /* 8.4 Найдите общий доступный остаток по типу счетов и отделению, где на каждый тип и отделение приходится более одного счета. Результаты должны быть упорядочены по общему остатку (от наибольшего к наименьшему).*/
 
-146 (42S02): Table 'bank.accoun' doesn't exist
 SELECT product_cd, open_branch_id, SUM(avail_balance) from account
 GROUP by product_cd, open_branch_id
 HAVING count(product_cd) > 1
-ORDER BY 3 DESC; /* указываем номер столбца ибо на MySQL ругается
+ORDER BY 3 DESC; /* указываем номер столбца ибо на MySQL ругается*/
 
 /*RESULT 
 +------------+----------------+--------------------+
