@@ -1045,6 +1045,8 @@ SELECT (37*15/(533-(23*3)))
 | HOUR_SECOND   | Количество часов, минут и секунд, разделенные двоеточием |
 | YEAR_MONTH    | Количество лет и месяцев, разделенных дефисом |
 
+[Упражнения Главы 7](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_7.sql)
+
 
 
 
