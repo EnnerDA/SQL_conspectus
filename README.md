@@ -1369,7 +1369,7 @@ SELECT 'Heavy Hitters' name, 10000 Low_Limit, 9999999.99 High_limit;
 | Heavy Hitters |     10000 | 9999999.99 |
 +---------------+-----------+------------+*/
 ```
-```
+```mysql
 SELECT tabl2.name, COUNT(*) num_customrs
 FROM
 /* tabl1 */
