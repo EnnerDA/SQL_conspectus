@@ -1409,12 +1409,9 @@ HAVING a.sum = max(a.sum);
 /*RESULT
 +----+---------------+-----+
 | ID | employee      | Sum |
-+----+---------------+-----+
++----+---------------+-----+)
+
 |  1 | Michael Smith |   8 |
 +----+---------------+-----+*/
 ```
-
-
-
-
-
+[Упражнения Главы 9](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_9.sql)
