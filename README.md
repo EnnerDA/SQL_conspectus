@@ -1209,6 +1209,51 @@ GROUP BY product_cd, open_branch_id WHITH ROLLUP;
 
 [Упражнения Главы 8](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_8.sql)
 
+## Глава 9. Подзапросы.
+
+В условиях `WHERE` используются подзапросы.
+```mysql
+SELECT account_id, product_cd, cust_id, avail_balance 
+FROM account
+WHERE account_id = (SELECT MAX(account_id) FROM account);
+/*RESULT
++------------+------------+---------+---------------+
+| account_id | product_cd | cust_id | avail_balance |
++------------+------------+---------+---------------+
+|         24 | SBL        |      13 |      50000.00 |
++------------+------------+---------+---------------+*/
+```
+Подзапрос `(SELECT MAX(account_id) FROM account)` возвращает один столбец и одну строку и воспринимается как число 24. Это называется *скалярный подзапрос* к нему можно применять арифметические условия =, <, >, <=, >=, !=. Пример сложного скалярного подзапроса.
+```mysql
+SELECT account_id, product_cd, cust_id, avail_balance 
+FROM account
+WHERE open_emp_id != (SELECT e.emp_id 
+FROM employee e INNER JOIN branch b
+ON e.assigned_branch_id = b.branch_id
+WHERE e.title = 'Head Teller' AND b.city = 'Woburn');
+```
+В этом случае подзапрос, несмотря на сложность, является скалярным и просто возвращает одну строку и один столбец со значением 10.
+
+Если подзапрос не скалярный то блок `WHERE` можно оформить с помощью оператора `IN` и `NOT IN`.
+Например нам надо вывести список руководителей
+```mysql
+SELECT emp_id, fname, lname, title FROM employee
+WHERE emp_id IN (select superior_emp_id from employee);
+/*RESULT 
++--------+---------+-----------+--------------------+
+| emp_id | fname   | lname     | title              |
++--------+---------+-----------+--------------------+
+|      1 | Michael | Smith     | President          |
+|      3 | Robert  | Tyler     | Treasurer          |
+|      4 | Susan   | Hawthorne | Operations Manager |
+|      6 | Helen   | Fleming   | Head Teller        |
+|     10 | Paula   | Roberts   | Head Teller        |
+|     13 | John    | Blake     | Head Teller        |
+|     16 | Theresa | Markham   | Head Teller        |
++--------+---------+-----------+--------------------+*/
+```
+### Опреатор `ALL`
+
 
 
 
