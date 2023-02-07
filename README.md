@@ -1319,7 +1319,7 @@ WHERE EXISTS (SELECT 1
 ```
 Не важно что вернет условие подзапроса, главное, что либо что то вернется либо нет. То есть `EXIST` как будто проверяет на True False.
 
-Например поиск клиентов чей ID не вхождящих в список ID в таблице business
+Например поиск клиентов чей ID не вхож в список ID в таблице business
  ```mysql
  SELECT a.account_id, a.product_cd, a.cust_id
 FROM account a
@@ -1327,12 +1327,92 @@ WHERE NOT EXISTS (SELECT 1
 FROM business b
 WHERE b.cust_id = a.cust_id);
 ```
+Связанные подзапросы можно применять и для обновления ячеек. Например можем обновить данные о последней транзакции. 
+```mysql
+UPDATE account a
+SET a.last_activity_date = (
+    SELECT MAX(t.txn_date)
+    FROM transaction t
+    WHERE t.account_id = a.account_id)
+WHERE EXISTS ( 
+    SELECT 1
+    FROM transaction t
+    WHERE t.account_id = a.account_id);
+```
+Если мы не напишем последний блок `WHERE` c `EXISTS` то по аккаунтам 21, 22 и 24 например в таблице transaction нет записей, и в таблице account они обновят своё значение на NULL, этот сценарий нам не нужен.
 
+### Оператор `UNION ALL`
+Сводит в один результирующий набор результаты нескольких выводов.
+Например вывод 
+```mysql
+SELECT 'Small Fry' name, 0 Low_Limit, 4999.99 High_limit;
+/*Result
++-----------+-----------+------------+
+| name      | Low_Limit | High_limit |
++-----------+-----------+------------+
+| Small Fry |         0 |    4999.99 |
++-----------+-----------+------------+*/
+```
+Объеденим
+```mysql
+SELECT 'Small Fry' name, 0 Low_Limit, 4999.99 High_limit
+UNION ALL
+SELECT 'Average Joes' name, 5000 Low_Limit, 9999.99 High_limit
+UNION ALL
+SELECT 'Heavy Hitters' name, 10000 Low_Limit, 9999999.99 High_limit;
+/*Result 
++---------------+-----------+------------+
+| name          | Low_Limit | High_limit |
++---------------+-----------+------------+
+| Small Fry     |         0 |    4999.99 |
+| Average Joes  |      5000 |    9999.99 |
+| Heavy Hitters |     10000 | 9999999.99 |
++---------------+-----------+------------+*/
+```
+```
+SELECT tabl2.name, COUNT(*) num_customrs
+FROM
+/* tabl1 */
+    (SELECT SUM(a.avail_balance) cust_balance, a.cust_id
+    FROM account a INNER JOIN product p
+    ON a.product_cd = p.product_cd
+    WHERE p.product_type_cd = 'ACCOUNT'
+    GROUP BY a.cust_id) tabl1
+INNER JOIN
+/* tabl2 */
+   (SELECT 'Small Fry' name, 0 Low_Limit, 4999.99 High_limit
+    UNION ALL
+    SELECT 'Average Joes' name, 5000 Low_Limit, 9999.99 High_limit
+    UNION ALL
+    SELECT 'Heavy Hitters' name, 10000 Low_Limit, 9999999.99 High_limit) tabl2
+ON tabl1.cust_balance BETWEEN tabl2.Low_Limit AND tabl2.High_limit
+GROUP BY tabl2.name;
 
-
-
-
-
+/* RESULT
++---------------+--------------+
+| name          | num_customrs |
++---------------+--------------+
+| Average Joes  |            2 |
+| Heavy Hitters |            4 |
+| Small Fry     |            5 |
++---------------+--------------+ */
+```
+Какйо сотрудник открыл больше всех счетов
+```mysql
+SELECT e.emp_id ID, CONCAT(e.fname, ' ', e.lname) employee, a.sum Sum
+FROM employee e INNER JOIN (
+SELECT open_emp_id, COUNT(*) sum
+FROM account
+GROUP BY open_emp_id) a
+ON e.emp_id = a.open_emp_id
+HAVING a.sum = max(a.sum);
+/*RESULT
++----+---------------+-----+
+| ID | employee      | Sum |
++----+---------------+-----+
+|  1 | Michael Smith |   8 |
++----+---------------+-----+*/
+```
 
 
 
