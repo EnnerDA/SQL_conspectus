@@ -1060,9 +1060,8 @@ GROUP BY open_emp_id;
 |          10 |
 |          13 |
 |          16 |
-+-------------+
-*/
-
++-------------+*/
+```
 Для подсчета количества строчек с одинаковым значением можно использовать *агрегатную функцию* - `COUNT(*)`.
 ```mysql
 SELECT open_emp_id, COUNT(*) how_many  FROM account
@@ -1252,7 +1251,83 @@ WHERE emp_id IN (select superior_emp_id from employee);
 |     16 | Theresa | Markham   | Head Teller        |
 +--------+---------+-----------+--------------------+*/
 ```
-### Опреатор `ALL`
+### Оператор `ALL`
+
+Позволяет производить сравнение одиночного значения с каждым значением набора.
+Например запрос выдающий ID всех сотрудников если их нет в списке руководителей
+```mysql
+SELECT  emp_id FROM employee
+WHERE emp_id != ALL (
+SELECT superior_emp_id FROM employee
+WHERE superior_emp_id IS NOT NULL /* почему то это важно */
+);
+```
+Сравнивать значения с набором значений с помощью операторов `not in` или `!= all` нужно аккуратно, убедившись, что в наборе нет значения NULL. Сервер приравнивает значение из левой части выражения к каждому члену набора, и любая попытка приравнять значение к NULL дает в результате unknown и следовательно Empty set.	
+
+### Оператор `ANY`
+Такйо же оператор как и `ALL`, по смыслу схожи с `AND` и `OR`.
+
+Требуется найти все счета, доступный остаток которых больше, чем на любом из счетов Фрэнка Такера:	
+```mysql
+SELECT account_id, avail_balance
+FROM account
+WHERE avail_balance > ANY (
+SELECT a.avail_balance /* Внимание подзапрос */
+FROM account a INNER JOIN individual i
+ON a.cust_id = i.cust_id
+WHERE  i.fname = 'Frank' AND i.lname = 'Tucker')
+ORDER BY avail_balance DESC;
+```
+### Подзапросы возвращающие несколько столбцов.
+Допустим в блоке `WHERE` требуется выполнитть два условия:
+1. ID отделения должно быть в одном списке
+2. ID сотрудника должен быть в другом списке
+Мы реализуем это так:
+```mysql
+WHERE (id_отделения, id_сотрудника) IN (SELECT нужные_ID_отделений, нужные_ID_сотрудников...
+```
+Важно в условии фильтрации указать в круглых скобках имена требуемых столбцов таблицы в том же порядке, в каком они возвращаются подзапросом.
+
+### Связанные подзапросы.
+Требуется определить всех клиентов у которых ровно 2 счета. Вот запрос здорового человека:
+```mysql
+SELECT cust_id, city
+FROM customer
+WHERE cust_id IN (
+ SELECT cust_id FROM account /* этот подзапрос независимый */
+ GROUP BY cust_id
+ HAVING COUNT(*) = 2
+);
+```
+А вот зависимый запрос
+```mysql
+SELECT c.cust_id, c.city
+FROM customer c
+WHERE 2 = (
+SELECT COUNT(*)
+FROM account a
+WHERE c.cust_id = a.cust_id /* вот зависимая часть запроса, некое ощущение цикла */
+);
+```
+### Оператор `EXIST`
+Оператор exists применяется, если требуется показать, что связь есть, а количество связей при этом не имеет значения.
+```mysql
+SELECT some_data
+FROM table
+WHERE EXISTS (SELECT 1
+зависимый подзапрос');
+```
+Не важно что вернет условие подзапроса, главное, что либо что то вернется либо нет. То есть `EXIST` как будто проверяет на True False.
+
+Например поиск клиентов чей ID не вхождящих в список ID в таблице business
+ ```mysql
+ SELECT a.account_id, a.product_cd, a.cust_id
+FROM account a
+WHERE NOT EXISTS (SELECT 1
+FROM business b
+WHERE b.cust_id = a.cust_id);
+```
+
 
 
 
