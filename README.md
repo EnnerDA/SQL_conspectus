@@ -1460,6 +1460,17 @@ ON e1.superior_emp_id = e2.emp_id;
 [Упражнения Главы 10](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_10.sql)
 
 ## Глава 11. Условная логика.
+Конструкция 
+```mysql
+CASE
+    WHEN /*условие*/
+        THEN /*действие*/
+    WHEN /*другое условие*/
+        THEN /*действие*/
+    ELSE /*действие если ни один WHEN не выполнился*/
+END
+```
+
 
 
 
