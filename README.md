@@ -1416,4 +1416,31 @@ HAVING a.sum = max(a.sum);
 [Упражнения Главы 9](https://github.com/EnnerDA/SQL_conspectus/blob/main/%D0%A3%D0%BF%D1%80%D0%B0%D0%B6%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%203/exercises_9.sql)
 
 ## Глава 10. И снова соединения.
+При соединении таблицы account и business по столбцу cust_id, результат будет содержать 5 строк. так как для части значений cust_id таблицы account нет никакого совпадения в таблице business. 
+
+Можно сделать так чтоб итоговый результат содержал абсолютно все строки, просто в тех где нет совпадения были NULL. Для этого применим **ВНЕШНЕЕ СОЕДИНЕНИЕ (OUTER JOIN)**.
+
+Внешнее соединение включает все строки одной таблицы и вводит данные второй таблицы только в случае обнаружения соответствующих строк.
+```mysql
+SELECT a.account_id, b.cust_id, b.name
+FROM account a LEFT OUTER JOIN business b
+USING(cust_id);
+```
+Такой запрос возьмет из таблицы слева (т.к. указано `LEFT`) весь столбец account_id достроит к нему 2 столбца справа cust_id, name из таблицы business. Если есть соответствие в cust_id то столбцы cust_id, name будут заполнены данными из business если нет то NULL.
+
+Если мы применим `RIGHT OUTER`, то получим 4 строки (как в business). Хотя получается что получили 5 строк. Пока не разобрался что не так.
+
+Рекурсивный вызов во внешнем соединении
+```mysql
+SELECT e1.emp_id, e1.fname, e1.lname, e1.title,
+CONCAT( e2.fname, ' ', e2.lname, ' ', e2.title) superior
+FROM employee e1 LEFT OUTER JOIN employee e2
+ON e1.superior_emp_id = e2.emp_id;
+```
+
+
+
+
+
+
 
