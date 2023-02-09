@@ -1586,7 +1586,7 @@ ON department (name);
 
 Проверочные ограничения целостности (**Check constraints**) Ограничивают допустимые значения столбца.	
 
-Создание ограничений:
+#### Создание ограничений:
 
 1. При создании таблицы оператором `CONSTRAINT`
 ```mysql
@@ -1598,7 +1598,7 @@ date_offered DATE,
 date_retired DATE, 	
 
 /* ОГРАНИЧЕНИЯ
-столбец product_type_cd как внешний ключ к таблице product_type	*/
+столбец product_type_cd как внешний ключ к таблице product_type, т.е. разрешит вносит только значения имеющиеся в столбце product_type_cd таблицы product_type	*/
 CONSTRAINT fk_product_type_cd FOREIGN KEY (product_type_cd) 
 REFERENCES product_type (product_type_cd), 	
 /*product_cd как первичный ключ таблицы*/
@@ -1622,6 +1622,43 @@ DROP PRIMARY KEY;
 ALTER TABLE product 	
 DROP FOREIGN KEY fk_product_type_cd;	
 ```
+### Каскадные ограничения.
+
+Допусти мы захотели изменить ячейку в таблице product
+```mysql
+UPDATE product 	
+SET product_type_cd = 'XYZ'. Но если мы захотим изменить и  	
+WHERE product_type_cd = 'LOAN';
+```
+Мы получим ошибку, т.к. у нас введен внешний ключ к столбцу product_type_cd таблицы product_type, а там нет значения 'XYZ'. 
+
+Но если мы захотим изменить и ячейку product_type_cd таблицы product_type, которая содержит дочерние строки мы тоже получим ошибку!
+
+Можем реализовать **каскадное обновление**, для этого:
+1. Удаляем существующий внешний ключ
+```mysql
+ ALTER TABLE product DROP FOREIGN KEY fk_product_type_cd;
+```
+2. Создаём новый внешний ключ с пометкой `UPDATE CASCADE`
+```mysql
+ALTER TABLE product
+ADD CONSTRAINT fk_product_type_cd FOREIGN KEY (product_type_cd)
+REFERENCES product_type (product_type_cd)
+ON UPDATE CASCADE;	
+```
+3. Меняем нужную нам ячейку в родительской таблице
+```mysql
+UPDATE product_type 	
+SET product_type_cd = 'XYZ' 	
+WHERE product_type_cd = 'LOAN';
+```
+Теперь ошибок нет. Более того в дочерней таблице все 'LOAN' заменены на 'XYZ'.  
+
+Если при создании условия дополнительно сделать пометку `ON DELETE CASCADE` то будет активировано каскадное удаление. Т.е. если мы удалим строку из product_type, то одноименные строки пропадут и в дочерней таблице product.
+
+
+
+
 
 
 
