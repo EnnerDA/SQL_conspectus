@@ -1553,8 +1553,75 @@ COMMIT
 ```
 
 ## Глава 13. Индексы и ограничения.
+### Индексы.
+Предназначение индексов – помощь в извлечении подмножества строк и столбцов таблицы без необходимости проверять все строки. Их уместно применять для действительно больших таблиц, где поиск нужной ячейки становиться слишком долгим.
 
+Для **создания индекса** определенному столбцу выполним:
+```mysql
+ALTER TABLE departnent
+ADD INDEX dept_name_idx (name);
+```
+А **удалить индекс** можно
+```mysql
+ALTER TABLE department 	
+DROP INDEX dept_name_idx;
+```
+Можно создавать **уникальный индекс**, он будет препятствовать созданию одинаковых ячеек в таком столбце. Но PRINARY KEY делает это по умолчанию.
+```mysql
+CREATE UNIQUE INDEX dept_name_idx
+ON department (name);
+```
+Можно создавать **составные индексы** на несколько столбцов. Это уместно например если объединить столбцы имя и фамилия, так как поиск, как правило, ведется по их сочетанию. 
+Но в этом случае важно подумать о том какой индекс указывать первым, ибо первичный поиск будет вестись именно по первому столбцу.
+```mysql
+ ALTER TABLE employee
+ ADD INDEX emp_names_idx (lname, fname);
+ ```
+ ### Ограничения.
+Ограничения первичного ключа (**Primary key constraints**)  - идентифицируют столбец или столбцы, гарантирующие уникальность в рамках таблицы.
 
+Ограничения внешнего ключа (**Foreign key constraints**) если на один или более столбцов накладывается такое ограничение: они могут содержать только значения, содержащиеся в столбцах первичного ключа другой таблицы. Также могут ограничиваться допустимые значения других таблиц, если установлены правила update cascade (каскадное обновление) или delete cascade (каскадное удаление).
+
+Ограничения уникальности (**Unique constraints**) На один или более столбцов накладывается ограничение: они могут содержать только уникальные в рамках таблицы значения.	
+
+Проверочные ограничения целостности (**Check constraints**) Ограничивают допустимые значения столбца.	
+
+Создание ограничений:
+
+1. При создании таблицы оператором `CONSTRAINT`
+```mysql
+CREATE TABLE product 	
+(product_cd VARCHAR(10) NOT NULL, 	
+name VARCHAR(50) NOT NULL, 	
+product_type_cd VARCHAR (10) NOT NULL, 	
+date_offered DATE, 	
+date_retired DATE, 	
+
+/* ОГРАНИЧЕНИЯ
+столбец product_type_cd как внешний ключ к таблице product_type	*/
+CONSTRAINT fk_product_type_cd FOREIGN KEY (product_type_cd) 
+REFERENCES product_type (product_type_cd), 	
+/*product_cd как первичный ключ таблицы*/
+CONSTRAINT pk_product PRIMARY KEY (product_cd) 	
+);	
+```
+2. Добавляются к уже созданной таблице
+```mysql
+ALTER TABLE product 	
+ADD CONSTRAINT pk_product PRIMARY KEY (product_cd); 	
+
+ALTER TABLE product 	
+ADD CONSTRAINT fk_product_type_cd FOREIGN KEY (product_type_cd) 	
+REFERENCES product_type (product_type_cd);	
+```
+Для удаления ограничения используется конструкция из п.2 но не `ADD`, а `DROP`. 
+```mysql
+ALTER TABLE product 	
+DROP PRIMARY KEY; 	
+
+ALTER TABLE product 	
+DROP FOREIGN KEY fk_product_type_cd;	
+```
 
 
 
